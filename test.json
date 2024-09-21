@@ -1,0 +1,33 @@
+{
+  "snap_in_package": {
+    "created_by": {
+      "type": "dev_user",
+      "display_handle": "Quark",
+      "display_id": "DEVU-1",
+      "display_name": "Quark",
+      "email": "ds8661@srmist.edu.in",
+      "full_name": "Divyansh Chauhan",
+      "id": "don:identity:dvrv-in-1:devo/2TBAblu5vv:devu/1",
+      "id_v1": "don:DEV-2TBAblu5vv:dev_user:DEVU-1",
+      "state": "active",
+      "thumbnail": "https://api.devrev.ai/internal/display-picture/Divyansh%20Chauhan.png"
+    },
+    "created_date": "2024-09-21T15:39:53.081Z",
+    "display_id": "snap_in_package-94bd77d1-bc89-4c31-b699-e6d9c37580b2",
+    "id": "don:integration:dvrv-in-1:devo/2TBAblu5vv:snap_in_package/94bd77d1-bc89-4c31-b699-e6d9c37580b2",
+    "modified_by": {
+      "type": "dev_user",
+      "display_handle": "Quark",
+      "display_id": "DEVU-1",
+      "display_name": "Quark",
+      "email": "ds8661@srmist.edu.in",
+      "full_name": "Divyansh Chauhan",
+      "id": "don:identity:dvrv-in-1:devo/2TBAblu5vv:devu/1",
+      "id_v1": "don:DEV-2TBAblu5vv:dev_user:DEVU-1",
+      "state": "active",
+      "thumbnail": "https://api.devrev.ai/internal/display-picture/Divyansh%20Chauhan.png"
+    },
+    "modified_date": "2024-09-21T15:39:53.081Z",
+    "slug": "hook-testing"
+  }
+}
