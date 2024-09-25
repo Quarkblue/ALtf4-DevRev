@@ -2,7 +2,7 @@ import {client, publicSDK} from "@devrev/typescript-sdk";
 import {WebhookEventRequest} from "@devrev/typescript-sdk/dist/auto-generated/public-devrev-sdk";
 import { TagData } from "Types/Interfaces";
 import { getDevsFromEvent } from "../../Modules/DevUsers";
-
+import { getTicketsFromAPI } from "../../Modules/ActiveTickets";
 
 async function testFunc(event: any) {
     const payloadType = event.payload.type;
@@ -14,6 +14,7 @@ async function testFunc(event: any) {
         workTags?.forEach((tag: TagData) => {
             console.log(tag.tag.name);
         })
+        getTicketsFromAPI()
     }
     getDevsFromEvent(event);
 }
