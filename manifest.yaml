@@ -1,7 +1,7 @@
 version: "2"
 
 name: Smart Ticket routing
-description: "This is a sample manifest for Smart Ticket routing."
+description: "This is a sample manifest for Smart Ticket routing. updated for dev and works"
 
 service_account:
   display_name: "ticket-bot"
@@ -10,15 +10,19 @@ event_sources:
   organization:
     - name: ticket-bot-webhook
       type: devrev-webhook
-      description: webhook trigerred when creating a work
+      description: webhook for work, devusers updates
       config:
         event_types:
           - work_created
           - work_updated
+          - dev_user_updated
 
 functions:
   - name: ticketRouteOn_WorkCreated
     description: Function to handle ticket routing on work creation
+
+  - name: Initialize
+    description: Function to initialize the ticket routing
 
 automations:
   - name: TicketRoute-on-WorkCreated-automation
@@ -26,4 +30,9 @@ automations:
     event_types:
       - work_created
       - work_updated
+      - dev_user_updated
     function: ticketRouteOn_WorkCreated
+
+hooks:
+  - type: activate
+    function: Initialize

@@ -1,6 +1,8 @@
 import {client, publicSDK} from "@devrev/typescript-sdk";
 import {WebhookEventRequest} from "@devrev/typescript-sdk/dist/auto-generated/public-devrev-sdk";
 import { TagData } from "Types/Interfaces";
+import { getDevsFromEvent } from "../../Modules/DevUsers";
+
 
 async function testFunc(event: any) {
     const payloadType = event.payload.type;
@@ -9,12 +11,12 @@ async function testFunc(event: any) {
     }
     else if(payloadType === "work_updated"){
         const workTags = event.payload.work_updated.work.tags;
-        workTags.forEach((tag: TagData) => {
+        workTags?.forEach((tag: TagData) => {
             console.log(tag.tag.name);
         })
     }
+    getDevsFromEvent(event);
 }
-
 
 
 
