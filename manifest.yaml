@@ -28,6 +28,9 @@ functions:
   - name: refreshDataContext
     description: Function to refresh the data context for ticket routing
 
+  - name: SetAwayFromOffice
+    description: Function to set the user as away from office
+
 automations:
   - name: TicketRoute-on-WorkCreated-automation
     source: ticket-bot-webhook
@@ -56,6 +59,15 @@ commands:
         object_types:
           - snap_in
     function: Initialize
+  
+  - name: SetAwayFromOffice
+    namespace: ticket_bot
+    description: Set the user as away from office, if already set, the user will be set as available
+    surfaces:
+      - surface: discussions
+        object_types:
+          - snap_in
+    function: SetAwayFromOffice
 
 hooks:
   - type: activate

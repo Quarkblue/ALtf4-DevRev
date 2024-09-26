@@ -4,6 +4,7 @@
 
 const Devs = new Map();
 const Tickets = new Map();
+const InActiveDevs = new Map();
 
 const closedStages = ["accepted", "resolved", "canceled"];
 const activeTicketStages = ["queued", "work_in_progress", "awaiting_customer_response", "awaiting_product_assist", "awaiting development", "in_development"];
@@ -37,4 +38,4 @@ function addTicketsToMap(tickets: any){
 }
 
 
-export { Devs, Tickets, closedStages, activeTicketStages, addDevsToMap, addTicketsToMap, getDevTickets };
+export { Devs, Tickets, InActiveDevs ,closedStages, activeTicketStages, addDevsToMap, addTicketsToMap, getDevTickets };

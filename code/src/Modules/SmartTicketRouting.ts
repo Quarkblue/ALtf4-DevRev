@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiConfig } from "./ApiConfig";
-import { Tickets, Devs, getDevTickets } from "./DataContext";
+import { Tickets, Devs, getDevTickets, InActiveDevs } from "./DataContext";
 import { updateTicketsFromAPI } from "./DataMethods";
 
 // get ticket count for the devs
@@ -18,6 +18,7 @@ function getDevsTicketsCount(): Map<string, number> {
 
 // on new ticket routing (Load Balancing & Random Assignment)
 function LoadBalancing() {
+  console.log("load balancing");
   let devTicketCount = getDevsTicketsCount();
   // getting a list of devs with least tickets
   const leastloadedDevs = Array.from(devTicketCount).filter(([devId, count]) => count === Math.min(...devTicketCount.values())).map(([devId, count]) => devId);
@@ -34,14 +35,14 @@ function LoadBalancing() {
   })
 }
 
-async function TicketRouting(devId: string, ticket: any) {
+function TicketRouting(devId: string, ticket: any) {
   if (devId && ticket.id) {
     const payload = {
       type: "ticket",
       id: ticket.id,
       owned_by: { set: [devId] },
     };
-    console.log(`Routing ticket ${ticket.id}:${ticket.title} to dev ${devId}`);
+    console.log(`Routing ticket ${ticket.id} => ${ticket.title} to dev ${devId}`);
     updateTicketsFromAPI(payload,ticket,devId)
   } else {
       if(!ticket.id){
@@ -54,4 +55,4 @@ async function TicketRouting(devId: string, ticket: any) {
 
 // on slash command ticket routing
 
-export { getDevsTicketsCount,LoadBalancing };
+export { getDevsTicketsCount,LoadBalancing,TicketRouting };
