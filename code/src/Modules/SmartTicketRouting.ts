@@ -1,25 +1,12 @@
 import axios from "axios";
 import { apiConfig } from "./ApiConfig";
-import { Tickets, Devs, addTicketToDev, getDevTickets } from "./DataContext";
+import { Tickets, Devs, getDevTickets } from "./DataContext";
 import { updateTicketsFromAPI } from "./DataMethods";
 
-
-// initial checking on starting for ticket routing and userassigned tickets
-function TicketRouting() {
-  Tickets.forEach((ticket: any) => {
-    const devid = ticket.owned_by[0].id;
-    addTicketToDev(ticket, devid);
-  });
-  Devs.forEach((dev: any) => {
-    console.log(dev.dev.display_name,dev.tickets);
-  });
-  console.log("Tickets assigned");
-}
-
+// get ticket count for the devs
 function getDevsTicketsCount(): Map<string, number> {
 
     const devTicketCount = new Map();
-
     Devs.forEach((dev: any) => {
         const devid = dev.id;
         const count = getDevTickets(devid);
@@ -30,42 +17,41 @@ function getDevsTicketsCount(): Map<string, number> {
 }
 
 // on new ticket routing (Load Balancing & Random Assignment)
-function findDevWithLeastTickets() {
+function LoadBalancing() {
   let devTicketCount = getDevsTicketsCount();
-  let minTicketCount = Infinity;
-  let leastLoadedDev: any = null;
+  // getting a list of devs with least tickets
+  const leastloadedDevs = Array.from(devTicketCount).filter(([devId, count]) => count === Math.min(...devTicketCount.values())).map(([devId, count]) => devId);
 
-  devTicketCount.forEach((count,devId)=>{
-     if(count<minTicketCount){
-          minTicketCount = count;
-          leastLoadedDev = devId;
-     }
-  })
 
+  // getting all the tickets that have owner as unassigned
   Tickets.forEach((ticket:any)=>{
-      if(ticket.owned_by.some((owner:any)=> owner.type === "service_account")){
-          newTicketRouting(leastLoadedDev,ticket);
+      if(ticket.owned_by[0].type === "service_account"){
+        const randomDev = leastloadedDevs[Math.floor(Math.random()*leastloadedDevs.length)]
+        console.log(`Routing ticket ${ticket.id}:${ticket.title} to dev ${randomDev}`);
+        delete leastloadedDevs[leastloadedDevs.indexOf(randomDev)];
+        TicketRouting(randomDev,ticket);
       }
   })
 }
 
-async function newTicketRouting(devId: string, ticket: any) {
+async function TicketRouting(devId: string, ticket: any) {
   if (devId && ticket.id) {
     const payload = {
       type: "ticket",
       id: ticket.id,
       owned_by: { set: [devId] },
     };
-    try {
-      updateTicketsFromAPI(payload,ticket,devId)
-    } catch (e) {
-      console.log("Error assigning ticket", e);
-    }
+    console.log(`Routing ticket ${ticket.id}:${ticket.title} to dev ${devId}`);
+    updateTicketsFromAPI(payload,ticket,devId)
   } else {
-    console.log("Invalid ticket or dev");
+      if(!ticket.id){
+        console.log("Ticket id is missing");
+      }else if(!devId){
+        console.log("Dev id is missing");
+      }
   }
 }
 
 // on slash command ticket routing
 
-export { TicketRouting, findDevWithLeastTickets };
+export { getDevsTicketsCount,LoadBalancing };

@@ -15,6 +15,7 @@ event_sources:
         event_types:
           - work_created
           - work_updated
+          - dev_user_created
           - dev_user_updated
 
 functions:
@@ -23,6 +24,9 @@ functions:
 
   - name: Initialize
     description: Function to initialize the ticket routing
+  
+  - name: refreshDataContext
+    description: Function to refresh the data context for ticket routing
 
 automations:
   - name: TicketRoute-on-WorkCreated-automation
@@ -30,8 +34,28 @@ automations:
     event_types:
       - work_created
       - work_updated
+      - dev_user_created
       - dev_user_updated
     function: ticketRouteOn_WorkCreated
+
+commands:
+  - name: RefreshData
+    namespace: ticket_bot
+    description: refresh the data stored for ticker routing in the bot
+    surfaces:
+      - surface: discussions
+        object_types:
+          - snap_in
+    function: refreshDataContext
+  
+  - name: ReInitialize
+    namespace: ticket_bot
+    description: Re-Initializes the ticket routing bot
+    surfaces:
+      - surface: discussions
+        object_types:
+          - snap_in
+    function: Initialize
 
 hooks:
   - type: activate

@@ -1,25 +1,9 @@
 import {client, publicSDK} from "@devrev/typescript-sdk";
 import {WebhookEventRequest} from "@devrev/typescript-sdk/dist/auto-generated/public-devrev-sdk";
 import { TagData } from "Types/Interfaces";
-import { getDevsFromAPI, getDevsFromEvent, getTicketsFromAPI } from "../../Modules/DataMethods";
-import {addTicketsToMap} from "../../Modules/DataContext";
-import { TicketRouting} from "../../Modules/SmartTicketRouting";
-
-async function testFunc(event: any) {
-    const payloadType = event.payload.type;
-    if(payloadType === "work_created"){
-        console.log("Work Created with name:" + event.payload.work_created?.work.name);
-    }
-    else if(payloadType === "work_updated"){
-        const workTags = event.payload.work_updated.work.tags;
-        workTags?.forEach((tag: TagData) => {
-            console.log(tag.tag.name);
-        })
-        getTicketsFromAPI()
-        getDevsFromAPI();
-    }
-    getDevsFromEvent(event);
-}
+import { getDevsFromAPI, getTicketsFromAPI } from "../../Modules/DataMethods";
+import { Devs, Tickets, closedStages, addDevsToMap, addTicketsToMap } from "../../Modules/DataContext";
+import { LoadBalancing,getDevsTicketsCount } from "../../Modules/SmartTicketRouting";
 
 function Handle(event: any) {
     const payloadType = event.payload.type;
@@ -27,10 +11,29 @@ function Handle(event: any) {
     if(payloadType === "work_created"){
         if(event.payload.work_created.work.type === "ticket"){
             addTicketsToMap([event.payload.work_created.work]);
-            
+            LoadBalancing()
         }
     }else if(payloadType === "work_updated") {
+        if(event.payload.work_updated.work.type === "ticket"){
+            const updatedworkID = event.payload.work_updated?.work.id;
+            
+            // if ticket is updated to closed, then remove it from the Tickets map
+            if(closedStages.includes(event.payload.work_updated.work.stage.name)){
+                Tickets.delete(updatedworkID);
+            }
+            
+            // if ticket is updated to new dev, then update the ticket in the Tickets map (This is automatically done by Tickets.set())
+            
+            // if ticket is updated to a new tag, then update the ticket in the Tickets map (This is automatically done by Tickets.set())
+
+            addTicketsToMap([event.payload.work_updated.work]);
+            LoadBalancing()
+        }
         
+    } else if(payloadType === "dev_user_created"){
+        addDevsToMap([event.payload.dev_user_created.dev_user]);
+    } else if(payloadType === "dev_user_updated"){
+        addDevsToMap([event.payload.dev_user_updated.dev_user]);
     }
     
 }
