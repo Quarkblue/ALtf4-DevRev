@@ -8,6 +8,5 @@ const apiConfig = {
     }
 }
 
-const ServiceAccountToken = process.env.SERVICE_ACCOUNT_TOKEN;
 
-export  {apiConfig, ServiceAccountToken};
+export  {apiConfig};

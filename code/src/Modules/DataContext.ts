@@ -9,6 +9,8 @@ const InActiveDevs = new Map();
 const closedStages = ["accepted", "resolved", "canceled"];
 const activeTicketStages = ["queued", "work_in_progress", "awaiting_customer_response", "awaiting_product_assist", "awaiting development", "in_development"];
 
+const newInactiveDevs = new Array();
+
 
 function addDevsToMap(devs: any){
     devs.forEach((dev: any) => {
@@ -31,11 +33,13 @@ function getDevTickets(devid: string): number{
 function addTicketsToMap(tickets: any){
     tickets.forEach((ticket: any) => {
         if(activeTicketStages.includes(ticket.stage.name)){
+            
             Tickets.set(ticket.id, ticket);
+            console.log(`Ticket ${ticket.id} => ${ticket.title} is added to the Tickets map {from addTicketsToMap in data context}`);
         }
         
     })
 }
 
 
-export { Devs, Tickets, InActiveDevs ,closedStages, activeTicketStages, addDevsToMap, addTicketsToMap, getDevTickets };
+export { Devs, Tickets, InActiveDevs ,closedStages, activeTicketStages, addDevsToMap, addTicketsToMap, getDevTickets, newInactiveDevs };

@@ -2,7 +2,7 @@ import { client } from "@devrev/typescript-sdk";
 import { Devs, InActiveDevs, Tickets } from "../../Modules/DataContext";
 import { removeInactiveDev, setInactiveDev} from "../../Modules/DataMethods";
 import { TicketRouting } from "../../Modules/SmartTicketRouting";
-import { ServiceAccountToken } from "../../Modules/ApiConfig";
+
 
 async function Handle(event: any){
     handleActiveInactive(event);
@@ -10,12 +10,10 @@ async function Handle(event: any){
 }
 
 async function handleLoadBalancing(event: any){
+    console.log('inside handleLoadBalancing')
     InActiveDevs.forEach((inactiveDev:any)=>{
         Tickets.forEach((ticket:any, ticketId:string)=>{
             if(ticket.owned_by[0].id === inactiveDev.id){
-                
-
-                
                 TicketRouting("don:identity:dvrv-in-1:devo/2TBAblu5vv:svcacc/2",ticket)
             }
         })
@@ -27,7 +25,7 @@ async function handleActiveInactive(event: any){
         // devrev sdk setup to make the api call as the bot
         const devrevSDK = client.setup({
           endpoint: event.execution_metadata.devrev_endpoint,
-          token: ServiceAccountToken,
+          token: event.context.secrets.service_account_token,
         });
         const actorID = event.payload.actor_id;
         const parentID = event.payload.parent_id;
@@ -44,6 +42,7 @@ async function handleActiveInactive(event: any){
         } else {
           if (Devs.has(actorID)) {
               body.body = `set ${Devs.get(actorID).full_name} as inactive`;
+              
             setInactiveDev(actorID);
             
           } else {
@@ -53,13 +52,12 @@ async function handleActiveInactive(event: any){
   
         // sending the comment to the timeline
         await devrevSDK.timelineEntriesCreate(body as any);
-  
         console.log("Comment added to timeline and set dev as inactive/active");
       }
 }
 
 function handleSetInactiveForTickets(){
-
+  
 }
 
 

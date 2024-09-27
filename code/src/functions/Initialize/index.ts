@@ -7,7 +7,7 @@ async function run(events: any[]) {
 
     await Promise.all([getTicketsFromAPI(), getDevsFromAPI()]).then(() => {
         InActiveDevs.clear();
-        LoadBalancing();
+        LoadBalancing(events[0].context.secrets.service_account_token);
     });
 
 
