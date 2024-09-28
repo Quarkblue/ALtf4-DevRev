@@ -27,6 +27,7 @@ async function LoadBalancing(serviceAccToken:string ,ticket?: any) {
     leastloadedDevs[Math.floor(Math.random() * leastloadedDevs.length)];
 
   if (ticket) {
+
     delete leastloadedDevs[leastloadedDevs.indexOf(randomDev)];
     const prevOwner = newInactiveDevs[newInactiveDevs.length - 1];
     const newOwner = randomDev;
@@ -37,14 +38,13 @@ async function LoadBalancing(serviceAccToken:string ,ticket?: any) {
     TicketRouting(randomDev, ticket).then(() => {
       // Send notifications to the previous and new owner
       sendNotificationToPrev(`<${newOwner}>`, prevOwner, serviceAccToken);
-      sendNotificationToNew(`<${prevOwner}>`, newOwner, serviceAccToken);
+      sendNotificationToNew(`A Ticket has been assigned to you since the previous owner was inactive <${ticket.id}>`, newOwner, serviceAccToken);
       resolve();
     });
   } else {
     Tickets.forEach(async (ticket: any) => {
       if (ticket.owned_by[0].type === "service_account") {
-        delete leastloadedDevs[leastloadedDevs.indexOf(randomDev)];
-        TicketRouting(randomDev, ticket);
+        LoadBalancing(serviceAccToken, ticket);
       }
     });
   }

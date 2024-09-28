@@ -1,5 +1,3 @@
-import {client, publicSDK} from "@devrev/typescript-sdk";
-import {WebhookEventRequest} from "@devrev/typescript-sdk/dist/auto-generated/public-devrev-sdk";
 import axios from "axios";
 import { apiConfig } from "./ApiConfig";
 import { Devs, InActiveDevs, Tickets, activeTicketStages, addDevsToMap, addTicketsToMap, newInactiveDevs } from "./DataContext";
@@ -83,10 +81,10 @@ async function sendNotificationToPrev(new_assignee: string, receiver: string, se
     console.log("An error occurred while sending the notification", e.toString());
   }
 }
-async function sendNotificationToNew(previous_assignee: string, receiver: string, service_account_token: string) {
+async function sendNotificationToNew(bodymsg: string, receiver: string, service_account_token: string) {
   const payload = buildNotificationPayload(
-    "don:core:dvrv-in-1:devo/2TBAblu5vv:notification_content_template/37",
-    { previous_assignee: previous_assignee }, 
+    "don:core:dvrv-in-1:devo/2TBAblu5vv:notification_content_template/39",
+    { bodymsg: bodymsg }, 
     receiver
   );
   try {
